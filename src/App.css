@@ -36,3 +36,17 @@
     transform: rotate(360deg);
   }
 }
+:root {
+  --background-color: white;
+  --text-color: black;
+}
+
+[data-bs-theme="dark"] {
+  --background-color: #121212;
+  --text-color: white;
+}
+
+.app {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}

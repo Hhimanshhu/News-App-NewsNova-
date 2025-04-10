@@ -1,0 +1,97 @@
+{
+    "status": "ok",
+    "totalResults": 7,
+    "articles": [
+      {
+        "source": {
+          "id": "rte",
+          "name": "RTE"
+        },
+        "author": "RTÉ News",
+        "title": "Who is giving aid to Myanmar after the earthquake?",
+        "description": "Millions in aid is arriving in Myanmar after a massive earthquake ravaged much of the war-torn country.",
+        "url": "https://www.rte.ie/news/2025/0401/1505150-myanmar-earthquake-aid/",
+        "urlToImage": "https://img.rasset.ie/00222ebc-1600.jpg",
+        "publishedAt": "2025-04-01T07:04:54Z",
+        "content": "Rescue workers, sniffer dogs, paramedics and millions in aid have begun arriving in Myanmar after a massive earthquake ravaged much of the war-torn country.\r\nAbout 2,000 people have so far been repor… [+4773 chars]"
+      },
+      {
+        "source": {
+          "id": "abc-news-au",
+          "name": "ABC News (AU)"
+        },
+        "author": "Libby  Hogan",
+        "title": "Aid agencies struggling to reach most in need after Myanmar earthquake",
+        "description": "Human rights groups fear the military is using logistical challenges as an excuse to withhold aid from rebel-held areas.",
+        "url": "https://www.abc.net.au/news/2025-04-01/aid-agencies-struggling-to-reach-most-in-need-myanmar-earthquake/105115382",
+        "urlToImage": "https://live-production.wcms.abc-cdn.net.au/c9eba3aa06d014a8bad598bfcecf368d?impolicy=wcms_watermark_news&cropH=2813&cropW=5000&xPos=0&yPos=260&width=862&height=485&imformat=generic",
+        "publishedAt": "2025-04-01T05:42:00Z",
+        "content": "Fifteen-year-old Ko Thein, from Sagaing division in central Myanmar, the epicentre of Friday's magnitude-7.7 earthquake, has been waiting for help that has yet to arrive.\r\nHis mother was killed befor… [+9033 chars]"
+      },
+      {
+        "source": {
+          "id": "rte",
+          "name": "RTE"
+        },
+        "author": "RTÉ News",
+        "title": "Myanmar to hold minute of silence for quake victims",
+        "description": "Myanmar will hold a minute of silence in tribute to victims of a catastrophic earthquake that has killed more than 2,000 people, buckling roads and flattening buildings as far away as Bangkok.",
+        "url": "https://www.rte.ie/news/world/2025/0401/1505139-myanmar-quake/",
+        "urlToImage": "https://img.rasset.ie/00222eb0-1600.jpg",
+        "publishedAt": "2025-04-01T03:23:39Z",
+        "content": "Myanmar will hold a minute of silence in tribute to victims of a catastrophic earthquake that has killed more than 2,000 people, buckling roads and flattening buildings as far away as Bangkok.\r\nFour … [+4464 chars]"
+      },
+      {
+        "source": {
+          "id": "google-news-in",
+          "name": "Google News (India)"
+        },
+        "author": null,
+        "title": "ISRO Satellite Images Reveal Massive Damage Caused By Myanmar Earthquake | See Pics - News18",
+        "description": "<ol><li>ISRO Satellite Images Reveal Massive Damage Caused By Myanmar Earthquake | See Pics  News18\r\n</li><li>Myanmar Quake: What It's Like Being Trapped Under Rubble, Survivors Show In Video  NDTV\r\n</li><li>Myanmar earthquake death toll reaches 2,719, likely…",
+        "url": "https://admin.google.com/ServiceNotAllowed",
+        "urlToImage": null,
+        "publishedAt": "2025-04-01T01:49:24+00:00",
+        "content": "We are sorry, but you do not have access to Google News. Some reasons why you may not have access: \r\n<ul><li>Your account is managed by an organization that has this service turned off for its users.… [+306 chars]"
+      },
+      {
+        "source": {
+          "id": "news-com-au",
+          "name": "News.com.au"
+        },
+        "author": "Brielle Burns, AFP",
+        "title": "Nation’s horror move after quake kills thousands",
+        "description": "Myanmar’s military-run government has been slammed for its “outrageous” move to continue air strikes as the war-torn country grapples with the aftermath of an earthquake which has left over 2,000 people dead.",
+        "url": "https://www.news.com.au/world/asia/powerful-nations-outrageous-move-after-quake-kills-thousands/news-story/8327b329419874df7976781848f380ca",
+        "urlToImage": "https://content.api.news/v3/images/bin/dc83c1b9ab5bff18540bbdd2e951941b",
+        "publishedAt": "2025-04-01T00:18:00Z",
+        "content": "Myanmar’s military-run government has been slammed for its “outrageous” move to continue air strikes as the war-torn country grapples with the aftermath of an earthquake which has left over 2,000 peo… [+5794 chars]"
+      },
+      {
+        "source": {
+          "id": "abc-news",
+          "name": "ABC News"
+        },
+        "author": "Mark Osborne, Jon Haworth, Meredith Deliso, David Brennan, Ivan Pereira, Kevin Shalvey, Megan Forrester",
+        "title": "Myanmar-Thailand earthquake live updates: Death toll crosses 2,000 in Myanmar",
+        "description": "The 7.7 magnitude earthquake rattled much of Southeast Asia on Friday.",
+        "url": "https://abcnews.go.com/International/live-updates/myanmar-thailand-bangkok-earthquake/?id=120257120",
+        "urlToImage": "https://i.abcnewsfe.com/a/01cdf1ef-c75c-4ab0-8b1a-f12340095497/earthquake-07-rt-jef-250331_1743436632830_hpMain_16x9.jpg?w=1600",
+        "publishedAt": "2025-03-31T19:49:53Z",
+        "content": "Reports from International Rescue Committee teams working in central Myanmar and Shan State reveal the staggering scale of humanitarian needs in the aftermath of Fridays earthquake.\r\nIRC partners hav… [+1399 chars]"
+      },
+      {
+        "source": {
+          "id": "associated-press",
+          "name": "Associated Press"
+        },
+        "author": null,
+        "title": "Myanmar earthquake: 1700 killed, rescue workers pull more bodies from rubble",
+        "description": "The death toll from the 7.7 magnitude earthquake that hit Myanmar has risen to more than 1,700 as more bodies have been pulled from the rubble. A government spokesman told state-run MRTV that another 3,400 have been injured and more than 300 were missing. He …",
+        "url": "https://apnews.com/article/myanmar-thailand-earthquake-ee151c1f08d1dd36c3cc01c3c83fa870",
+        "urlToImage": "https://dims.apnews.com/dims4/default/7b1524a/2147483647/strip/true/crop/3000x1688+0+117/resize/1440x810!/quality/90/?url=https%3A%2F%2Fassets.apnews.com%2F14%2F89%2Feab902b3b72ed0386de646c0280a%2Fec974dad36484a1e91c03b94442fa0d4",
+        "publishedAt": "2025-03-31T04:12:51Z",
+        "content": "MANDALAY, Myanmar (AP) The death toll from the earthquake that hit Myanmar has risen to more than 1,700 as more bodies have been pulled from the rubble, the countrys military-led government said Mond… [+810 chars]"
+      }
+    ]
+  }

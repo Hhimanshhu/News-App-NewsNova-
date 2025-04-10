@@ -1,0 +1,41 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
+
+.scrollable-text {
+  max-height: 80px; /* Fixed height for text */
+  overflow-y: auto; /* Allows scrolling */
+  padding-right: 5px; /* Adds spacing for scrollbar */
+}
+
+.scrollable-text::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollable-text::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 5px;
+}
+
+.scrollable-text::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+.btn-primary {
+  margin-top: auto;
+}
