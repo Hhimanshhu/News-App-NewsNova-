@@ -1,50 +1,187 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import News from './components/News';
-import './App.css';
+import React, { useState, useEffect, useRef } from "react";
+import Navbar from "./components/Navbar";
+import News from "./components/News";
+import "./App.css";
+import About from "./components/About";
+import LoadingBar from "react-top-loading-bar";
 
 import {
   BrowserRouter as Router,
   Routes,
   Route,
+  useLocation,
+  Navigate,
 } from "react-router-dom";
 
-function App() {
-  const [theme, setTheme] = useState('light');
+const categoryMap = {
+  Politics: "politics",
+  Technology: "technology",
+  Business: "business",
+  Entertainment: "entertainment",
+  Sports: "sports",
+  Health: "health",
+  Science: "science",
+  Environment: "environment",
+  Education: "education",
+  Crime: "crime",
+  International: "world",
+  home: "top",
+};
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-bs-theme', theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+const RoutedContent = ({
+  theme,
+  toggleTheme,
+  loadingBarRef,
+  searchQuery,
+  setSearchQuery,
+}) => {
+  const location = useLocation();
+  const commonProps = {
+    pagesize: 12,
+    country: "in",
+    loadingBarRef: loadingBarRef,
   };
 
   return (
-    <div className="app">
-      <Router>
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
-      {/* <News pagesize ={12} country = 'in' category='latest'/> */}
-    
-          <Routes>
-            <Route path="/" element={<News pagesize={12} country='in' category='latest' />} />
-            <Route path="/Politics" element={<News pagesize={12} country='in' category='Politics' />} />
-            <Route path="/Technology" element={<News pagesize={12} country='in' category='Technology' />} />
-            <Route path="/Business" element={<News pagesize={12} country='in' category='Business' />} />
-            <Route path="/Entertainment" element={<News pagesize={12} country='in' category='Entertainment' />} />
-            <Route path="/Sports" element={<News pagesize={12} country='in' category='Sports' />} />
-            <Route path="/Health" element={<News pagesize={12} country='in' category='Health' />} />
-            <Route path="/Science" element={<News pagesize={12} country='in' category='Science' />} />
-            <Route path="/Environment" element={<News pagesize={12} country='in' category='Environment' />} />
-            <Route path="/Education" element={<News pagesize={12} country='in' category='Education' />} />
-            <Route path="/Crime" element={<News pagesize={12} country='in' category='Crime' />} />
-            <Route path="/International" element={<News pagesize={12} country='in' category='International' />} />
-          </Routes>
+    <>
+      <Navbar
+        theme={theme}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        toggleTheme={toggleTheme}
+      />
+      <Routes location={location} key={location.key}>
+        <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="/about" element={<About theme={theme} />} />
+        {Object.keys(categoryMap).map((path) => (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={
+              <News
+                {...commonProps}
+                pageSize={9}
+                country="in"
+                searchQuery={searchQuery}
+                category={categoryMap[path]}
+              />
+            }
+          />
+        ))}
+        <Route path="/" element={<Navigate to="/home" />} />
+      </Routes>
+    </>
+  );
+};
 
-      </Router>
-    </div>
+function App() {
+  const [theme, setTheme] = useState("light");
+  const loadingBarRef = useRef(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
+
+  return (
+    <Router>
+      <LoadingBar color="#f11946" ref={loadingBarRef} />
+      <RoutedContent
+        theme={theme}
+        toggleTheme={toggleTheme}
+        loadingBarRef={loadingBarRef}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
+    </Router>
   );
 }
 
 export default App;
 
+// import React, { useState, useEffect, useRef } from 'react';
+// import Navbar from './components/Navbar';
+// import News from './components/News';
+// import './App.css';
+// import About from './components/About';
+// import LoadingBar from 'react-top-loading-bar';
+
+// import {
+//   BrowserRouter as Router,
+//   Routes,
+//   Route,
+//   useLocation,
+//   Navigate,
+// } from 'react-router-dom';
+
+// const categoryMap = {
+//   Politics: 'politics',
+//   Technology: 'technology',
+//   Business: 'business',
+//   Entertainment: 'entertainment',
+//   Sports: 'sports',
+//   Health: 'health',
+//   Science: 'science',
+//   Environment: 'environment',
+//   Education: 'education',
+//   Crime: 'crime',
+//   International: 'world',
+//   home: 'top',
+// };
+
+// const RoutedContent = ({ theme, toggleTheme, loadingBarRef }) => {
+//   const location = useLocation();
+//   const commonProps = {
+//     pagesize: 12,
+//     country: 'in',
+//     loadingBarRef: loadingBarRef,
+//   };
+
+//   return (
+//     <>
+//       <Navbar theme={theme} toggleTheme={toggleTheme} />
+//       <Routes location={location} key={location.key}>
+//         <Route path="*" element={<Navigate to="/home" />} />
+//         <Route path="/about" element={<About theme={theme} />} />
+//         {Object.keys(categoryMap).map((path) => (
+//           <Route
+//             key={path}
+//             path={`/${path}`}
+//             element={<News {...commonProps} category={categoryMap[path]} />}
+//           />
+//         ))}
+//         <Route path="/" element={<Navigate to="/home" />} />
+//       </Routes>
+//     </>
+//   );
+// };
+
+// function App() {
+//   const [theme, setTheme] = useState('light');
+//   const loadingBarRef = useRef(null);
+
+//   useEffect(() => {
+//     document.documentElement.setAttribute('data-bs-theme', theme);
+//   }, [theme]);
+
+//   const toggleTheme = () => {
+//     setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+//   };
+
+//   return (
+//     <Router>
+//       <LoadingBar color="#f11946" ref={loadingBarRef} />
+//       <RoutedContent
+//         theme={theme}
+//         toggleTheme={toggleTheme}
+//         loadingBarRef={loadingBarRef}
+//       />
+//     </Router>
+//   );
+// }
+
+// export default App;

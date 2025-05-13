@@ -50,3 +50,6 @@
   background-color: var(--background-color);
   color: var(--text-color);
 }
+#nprogress .bar {
+  z-index: 2000 !important;
+}

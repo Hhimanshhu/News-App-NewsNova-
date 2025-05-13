@@ -18,8 +18,8 @@
 }
 
 .scrollable-text {
-  max-height: 80px; /* Fixed height for text */
-  overflow-y: auto; /* Allows scrolling */
+  max-height: 80px;
+  overflow-y: auto; 
   padding-right: 5px; /* Adds spacing for scrollbar */
 }
 
@@ -38,4 +38,7 @@
 
 .btn-primary {
   margin-top: auto;
+}
+.headingg{
+  padding-bottom: 20px;
 }

@@ -1,0 +1,22 @@
+.container {
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .accordion-button {
+    background-color: inherit;
+    color: inherit;
+    border: none;
+  }
+  
+  .accordion-body {
+    background-color: inherit;
+    color: inherit;
+  }
+  
+  .accordion-item {
+    margin-bottom: 10px;
+  }
+.heading{
+    padding: 15px
+}

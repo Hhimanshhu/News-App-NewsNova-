@@ -1,152 +1,354 @@
-import React, { Component } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import NewsItem from "./NewsItem";
-import Spinner from "./Spinner"; 
+import Spinner from "./Spinner";
 import "./News.css";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
-export default class News extends Component {
+const categoryMap = {
+  latest: "top",
+  politics: "politics",
+  technology: "technology",
+  business: "business",
+  entertainment: "entertainment",
+  sports: "sports",
+  health: "health",
+  science: "science",
+  environment: "environment",
+  education: "education",
+  crime: "crime",
+  international: "world"
+};
 
-  static defaultProps ={
-    pagesize : 12,
-    country: 'in',
-    category: 'latest'
+const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRef, searchQuery }) => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [nextPage, setNextPage] = useState(null);
+  const loaderRef = useRef(null);
+  const seenUrlsRef = useRef(new Set());
 
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const fetchNews = useCallback(async (pageUrl = null) => {
+    setLoading(true);
+    loadingBarRef?.current?.continuousStart();
 
-  static propTypes ={
-    country: PropTypes.string,
-    pagesize: PropTypes.number,
-    category: PropTypes.string,
-  }
+    const apiKey = "pub_860907b005de0fafb1386348cda1fd5fc0dde";
+    const safeCategory = categoryMap[category.toLowerCase()] || "top";
+    const url = pageUrl
+      ? `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}&page=${pageUrl}`
+      : `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}`;
 
-  constructor() {
-    super();
-    this.state = {
-      articles: [],
-      loading: false,
-      page: 1,
-    };
-  }
-
-
-  async fetchNews(page) {
-    this.setState({ loading: true });
-    
-    const { category, country, pagesize } = this.props;
-    const number = pagesize;
-    const offset = (page - 1) * number;
-    
-    
-
-    let url = `https://api.worldnewsapi.com/search-news?api-key=69d64729e6e84f41aa5c5d8c96caff7d&text=${category}&language=en&number=${number}&offset=${offset}&source-countries=${country}`;
-
-
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=ce038b3a95ec4fdda1714cf58ee5a944&text=latest&language=en&number=${number}&offset=${offset}&source-countries=${country}`;
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=91cbc42864b44c1da1386d8c4d2a9b6b&text=latest&language=en&number=${number}&offset=${offset}`;
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=87155e4e91e74611b54817c8a156e5cd&text=latest&language=en&number=${number}&offset=${offset}`;
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=69d64729e6e84f41aa5c5d8c96caff7d&text=latest&language=en&number=${number}&offset=${offset}&source-countries=${country}`;
-
-    ////Political News
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=ce038b3a95ec4fdda1714cf58ee5a944&text=politics&language=en&number=${number}&offset=${offset}`
-    //const url = `https://api.worldnewsapi.com/search-news?api-key=91cbc42864b44c1da1386d8c4d2a9b6b&text=politics&language=en&number=${number}&offset=${offset}`
-    //  const url = `https://api.worldnewsapi.com/search-news?api-key=87155e4e91e74611b54817c8a156e5cd&text=politics&language=en&number=${number}&offset=${offset}`
-    
-
-
-    //// Share Market News
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=ce038b3a95ec4fdda1714cf58ee5a944&text=stock%20market&language=en&number=${number}&offset=${offset}`
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=91cbc42864b44c1da1386d8c4d2a9b6b&text=stock%20market&language=en&number=${number}&offset=${offset}`
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=87155e4e91e74611b54817c8a156e5cd&text=stock%20market&language=en&number=${number}&offset=${offset}`
-    //// Sports News
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=ce038b3a95ec4fdda1714cf58ee5a944&text=sports&language=en&number=${number}&offset=${offset}`
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=91cbc42864b44c1da1386d8c4d2a9b6b&text=sports&language=en&number=${number}&offset=${offset}`
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=87155e4e91e74611b54817c8a156e5cd&text=sports&language=en&number=${number}&offset=${offset}`
-
-    //// Tech News   
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=ce038b3a95ec4fdda1714cf58ee5a944&text=technology&language=en&number=${number}&offset=${offset}`
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=91cbc42864b44c1da1386d8c4d2a9b6b&text=technology&language=en&number=${number}&offset=${offset}`
-    // const url = `https://api.worldnewsapi.com/search-news?api-key=87155e4e91e74611b54817c8a156e5cd&text=technology&language=en&number=${number}&offset=${offset}`
- 
-
-
-  
     try {
+      console.log("Fetching news from:", url);
       const response = await fetch(url);
       const data = await response.json();
-      this.setState({
-        articles: data.news || [],
-        loading: false,
-        page: page,
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll to top smoothly
+
+      console.log("API Response:", data);
+
+      if (response.status === 429) {
+        console.error("Rate limited: Too many requests (429)");
+        setHasMore(false);
+        return;
+      }
+
+      if (!Array.isArray(data.results)) {
+        console.error("Malformed response: 'results' is not an array", data);
+        setHasMore(false);
+        return;
+      }
+
+      const newArticles = data.results.filter(
+        (article) =>
+          article.title &&
+          article.description &&
+          article.image_url &&
+          article.link &&
+          !seenUrlsRef.current.has(article.link)
+      );
+
+      setArticles((prev) => [...prev, ...newArticles]);
+      newArticles.forEach(article => seenUrlsRef.current.add(article.link));
+      setNextPage(data.nextPage || null);
+      setHasMore(!!data.nextPage);
     } catch (error) {
       console.error("Error fetching news:", error);
-      this.setState({ articles: [], loading: false });
+    } finally {
+      setLoading(false);
+      loadingBarRef?.current?.complete();
     }
-  }
-  
+  }, [category, country, loadingBarRef]);
+
+  useEffect(() => {
+    document.title = `${category.charAt(0).toUpperCase() + category.slice(1)} - NewsNova`;
+  }, [category]);
+
+  useEffect(() => {
+    setArticles([]);
+    setHasMore(true);
+    setNextPage(null);
+    seenUrlsRef.current.clear();
+    fetchNews();
+  }, [category, country, pagesize, fetchNews]);
 
 
-  componentDidMount() {
-    this.fetchNews(this.state.page);
-  }
+ useEffect(() => {
+  // On new search, scroll to top (optional for better UX)
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}, [searchQuery]);
 
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.category !== this.props.category ||
-      prevProps.country !== this.props.country ||
-      prevProps.pagesize !== this.props.pagesize
-    ) {
-      this.fetchNews(1); // reset to page 1 when category/country/pagesize changes
-    }
-  }
-
-  handleNext = () => {
-    this.fetchNews(this.state.page + 1);
-  };
-
-  handlePrevious = () => {
-    if (this.state.page > 1) {
-      this.fetchNews(this.state.page - 1);
-    }
-  };
-
-  render() {
-    return (
-      <div className="container my-3">
-        <h1 className="text-center" style={{margin: '35px 0px'}}>NewsNova - Top Headlines</h1>
-        {this.state.loading ? (
-          <Spinner /> // Display Spinner while loading is true
-        ) : (
-          <div className="row">
-            {this.state.articles.map((element) => (
-              <div className="col-md-3 d-flex align-items-stretch mb-3" key={element.url}>
-                <NewsItem
-                  title={element.title}
-                  description={element.text}
-                  imageurl={element.image || "https://via.placeholder.com/150"}
-                  newsurl={element.url}
-                  date={element.publish_date}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="d-flex justify-content-between mt-4">
-          <button
-            disabled={this.state.page <= 1}
-            className="btn btn-dark"
-            onClick={this.handlePrevious}
-          >
-            ⬅ Previous
-          </button>
-          <button className="btn btn-dark" onClick={this.handleNext}>
-            Next ➡
-          </button>
-        </div>
-      </div>
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && hasMore) {
+          fetchNews(nextPage);
+        }
+      },
+      {
+        root: null,
+        rootMargin: "100px",
+        threshold: 1.0,
+      }
     );
-  }
-}
+
+    if (loaderRef.current) observer.observe(loaderRef.current);
+    return () => observer.disconnect();
+  }, [nextPage, loading, hasMore, fetchNews]);
+
+const filteredArticles = articles.filter((article) => {
+  if (!searchQuery.trim()) return true; // if searchQuery is empty, show all
+  const lowerQuery = searchQuery.toLowerCase();
+  return (
+    article.title.toLowerCase().includes(lowerQuery) ||
+    article.description.toLowerCase().includes(lowerQuery)
+  );
+});
+
+  return (
+    <div className="container my-3">
+      <div className="headingg">
+        <h1 className="text-center" style={{ margin: "1px 50px" }}>
+          NewsNova - Top {category.charAt(0).toUpperCase() + category.slice(1)} Headlines
+        </h1>
+      </div>
+
+      <div className="row">
+        {filteredArticles.map((element) => (
+          <div
+            className="col-md-3 col-sm-6 col-12 d-flex align-items-stretch mb-3"
+            key={`${element.link}-${element.pubDate}`}
+          >
+            <NewsItem
+              title={element.title}
+              description={element.description}
+              imageurl={element.image_url}
+              newsurl={element.link}
+              date={element.pubDate}
+            />
+          </div>
+        ))}
+      </div>
+
+      {loading && <Spinner />}
+      <div ref={loaderRef} style={{ height: "20px" }}></div>
+      {!hasMore && (
+        <div className="text-center text-muted my-3">No more articles to load</div>
+      )}
+    </div>
+  );
+};
+
+News.propTypes = {
+  country: PropTypes.string,
+  pagesize: PropTypes.number,
+  category: PropTypes.string,
+  loadingBarRef: PropTypes.object,
+};
+
+export default News;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect, useRef, useCallback } from "react";
+// import NewsItem from "./NewsItem";
+// import Spinner from "./Spinner";
+// import "./News.css";
+// import PropTypes from "prop-types";
+
+// const categoryMap = {
+//   latest: "top",
+//   politics: "politics",
+//   technology: "technology",
+//   business: "business",
+//   entertainment: "entertainment",
+//   sports: "sports",
+//   health: "health",
+//   science: "science",
+//   environment: "environment",
+//   education: "education",
+//   crime: "crime",
+//   international: "world"
+// };
+
+// const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRef }) => {
+//   const [articles, setArticles] = useState([]);
+//   const [loading, setLoading] = useState(false);
+//   const [hasMore, setHasMore] = useState(true);
+//   const [nextPage, setNextPage] = useState(null);
+//   const loaderRef = useRef(null);
+//   const seenUrlsRef = useRef(new Set());
+
+//   // eslint-disable-next-line react-hooks/exhaustive-deps
+//   const fetchNews = useCallback(async (pageUrl = null) => {
+//     setLoading(true);
+//     loadingBarRef?.current?.continuousStart();
+
+//     const apiKey = "pub_858716e13bf04ff077807ae24bb431879554e";
+//     const safeCategory = categoryMap[category.toLowerCase()] || "top";
+//     const url = pageUrl
+//       ? `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}&page=${pageUrl}`
+//       : `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}`;
+
+//     try {
+//       console.log("Fetching news from:", url);
+//       const response = await fetch(url);
+//       const data = await response.json();
+
+//       console.log("API Response:", data);
+
+//       if (response.status === 429) {
+//         console.error("Rate limited: Too many requests (429)");
+//         setHasMore(false);
+//         return;
+//       }
+
+//       if (!Array.isArray(data.results)) {
+//         console.error("Malformed response: 'results' is not an array", data);
+//         setHasMore(false);
+//         return;
+//       }
+
+//       const newArticles = data.results.filter(
+//         (article) =>
+//           article.title &&
+//           article.description &&
+//           article.image_url &&
+//           article.link &&
+//           !seenUrlsRef.current.has(article.link)
+//       );
+
+//       setArticles((prev) => [...prev, ...newArticles]);
+//       newArticles.forEach(article => seenUrlsRef.current.add(article.link));
+//       setNextPage(data.nextPage || null);
+//       setHasMore(!!data.nextPage);
+//     } catch (error) {
+//       console.error("Error fetching news:", error);
+//     } finally {
+//       setLoading(false);
+//       loadingBarRef?.current?.complete();
+//     }
+//   }, [category, country, loadingBarRef]);
+
+//   useEffect(() => {
+//     document.title = `${category.charAt(0).toUpperCase() + category.slice(1)} - NewsNova`;
+//   }, [category]);
+
+//   useEffect(() => {
+//     setArticles([]);
+//     setHasMore(true);
+//     setNextPage(null);
+//     seenUrlsRef.current.clear();
+//     fetchNews();
+//   }, [category, country, pagesize, fetchNews]);
+
+//   useEffect(() => {
+//     const observer = new IntersectionObserver(
+//       (entries) => {
+//         if (entries[0].isIntersecting && !loading && hasMore) {
+//           fetchNews(nextPage);
+//         }
+//       },
+//       {
+//         root: null,
+//         rootMargin: "100px",
+//         threshold: 1.0,
+//       }
+//     );
+
+//     if (loaderRef.current) observer.observe(loaderRef.current);
+//     return () => observer.disconnect();
+//   }, [nextPage, loading, hasMore, fetchNews]);
+
+//   return (
+//     <div className="container my-3">
+//       <div className="headingg">
+//         <h1 className="text-center" style={{ margin: "1px 50px" }}>
+//           NewsNova - Top {category.charAt(0).toUpperCase() + category.slice(1)} Headlines
+//         </h1>
+//       </div>
+
+//       <div className="row">
+//         {articles.map((element) => (
+//           <div
+//             className="col-md-3 col-sm-6 col-12 d-flex align-items-stretch mb-3"
+//             key={`${element.link}-${element.pubDate}`}
+//           >
+//             <NewsItem
+//               title={element.title}
+//               description={element.description}
+//               imageurl={element.image_url}
+//               newsurl={element.link}
+//               date={element.pubDate}
+//             />
+//           </div>
+//         ))}
+//       </div>
+
+//       {loading && <Spinner />}
+//       <div ref={loaderRef} style={{ height: "20px" }}></div>
+//       {!hasMore && (
+//         <div className="text-center text-muted my-3">No more articles to load</div>
+//       )}
+//     </div>
+//   );
+// };
+
+// News.propTypes = {
+//   country: PropTypes.string,
+//   pagesize: PropTypes.number,
+//   category: PropTypes.string,
+//   loadingBarRef: PropTypes.object,
+// };
+
+// export default News;
