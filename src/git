@@ -10,6 +10,7 @@ git push -u origin main
 
 
 Push an existing repository from the command line ---------------->
-git remote add origin https://github.com/Hhimanshhu/News-App-NewsNova-.git
-git branch -M main
-git push -u origin main
+git status
+git add .
+git commit -m "Update: Improved About section and UI content"
+git push origin main
