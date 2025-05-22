@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import NewsItem from "./NewsItem";
-// import Spinner from "./Spinner";
 import NewsSkeleton from "./NewsSkeleton";
+import ScrollToTopButton from "./ScrollToTopButton.js";
 import "./News.css";
 import PropTypes from "prop-types";
 
@@ -33,7 +33,7 @@ const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRe
     setLoading(true);
     loadingBarRef?.current?.continuousStart();
 
-    const apiKey = "pub_860907b005de0fafb1386348cda1fd5fc0dde";
+    const apiKey = "pub_858716e13bf04ff077807ae24bb431879554e";
     const safeCategory = categoryMap[category.toLowerCase()] || "top";
     const url = pageUrl
       ? `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}&page=${pageUrl}`
@@ -131,6 +131,14 @@ const filteredArticles = articles.filter((article) => {
           NewsNova - Top {category.charAt(0).toUpperCase() + category.slice(1)} Headlines
         </h1>
       </div>
+      {filteredArticles.length === 0 && !loading && (
+        <div className="text-center text-muted my-3">No results found for "{searchQuery}"</div>
+      )}
+        {searchQuery.trim() && (
+        <h5 className="text-muted text-center mb-3">
+          Showing search results for: <strong>{searchQuery}</strong>
+        </h5>
+      )}
 
       <div className="row">
         {filteredArticles.map((element) => (
@@ -149,11 +157,11 @@ const filteredArticles = articles.filter((article) => {
         ))}
       </div>
       {loading && <NewsSkeleton count={9} />} 
-      {/* {loading && <Spinner />} */}
       <div ref={loaderRef} style={{ height: "20px" }}></div>
       {!hasMore && (
         <div className="text-center text-muted my-3">No more articles to load</div>
       )}
+      <ScrollToTopButton />
     </div>
   );
 };

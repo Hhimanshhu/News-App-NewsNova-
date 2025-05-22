@@ -1,6 +1,7 @@
 import React from 'react';
 import "./Navbar.css";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({ theme, toggleTheme, searchQuery, setSearchQuery }) => {
   const handleInputChange = (e) => {
@@ -11,7 +12,13 @@ const Navbar = ({ theme, toggleTheme, searchQuery, setSearchQuery }) => {
     e.preventDefault();
     // You can handle form submission logic here if needed
   };
+const navigate = useNavigate();
 
+const handleCategoryClick = (path) => {
+  setSearchQuery("");
+  navigate(path);
+};
+ 
   return (
     <nav className={`navbar navbar-expand-lg ${theme === 'dark' ? 'navbar-dark bg-dark' : 'navbar-light bg-light'}`}>
       <div className="container-fluid">
@@ -23,7 +30,7 @@ const Navbar = ({ theme, toggleTheme, searchQuery, setSearchQuery }) => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/home">Home</Link>
+              <Link className="nav-link active"  onClick={() => handleCategoryClick('/home')} aria-current="page">Home</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/about">About</Link>
@@ -33,18 +40,18 @@ const Navbar = ({ theme, toggleTheme, searchQuery, setSearchQuery }) => {
                 Categories
               </Link>
               <ul className="dropdown-menu">
-                <li><Link className="dropdown-item" to="/Politics">Politics</Link></li>
-                <li><Link className="dropdown-item" to="/Technology">Technology</Link></li>
-                <li><Link className="dropdown-item" to="/Business">Business</Link></li>
-                <li><Link className="dropdown-item" to="/Entertainment">Entertainment</Link></li>
-                <li><Link className="dropdown-item" to="/Sports">Sports</Link></li>
-                <li><Link className="dropdown-item" to="/Health">Health</Link></li>
-                <li><Link className="dropdown-item" to="/Science">Science</Link></li>
-                <li><Link className="dropdown-item" to="/Environment">Environment</Link></li>
-                <li><Link className="dropdown-item" to="/Education">Education</Link></li>
-                <li><Link className="dropdown-item" to="/Crime">Crime</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Politics')}>Politics</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Technology')}>Technology</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Business')}>Business</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Entertainment')}>Entertainment</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Sports')}>Sports</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Health')}>Health</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Science')}>Science</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Environment')}>Environment</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Education')}>Education</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/Crime')}>Crime</Link></li>
                 <li><hr className="dropdown-divider" /></li>
-                <li><Link className="dropdown-item" to="/International">International</Link></li>
+                <li><Link className="dropdown-item" onClick={() => handleCategoryClick('/International')}>International</Link></li>
               </ul>
             </li>
           </ul>
@@ -75,5 +82,3 @@ const Navbar = ({ theme, toggleTheme, searchQuery, setSearchQuery }) => {
 };
 
 export default Navbar;
-
-
