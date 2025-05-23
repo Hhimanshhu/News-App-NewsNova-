@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./ScrollToTopButton.css"; // If you’re using the custom style
 
 const ScrollToTopButton = () => {
   const [visible, setVisible] = useState(false);
@@ -9,14 +10,15 @@ const ScrollToTopButton = () => {
     return () => window.removeEventListener("scroll", toggle);
   }, []);
 
-  return visible ? (
+  return (
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="btn btn-secondary position-fixed bottom-0 end-0 m-4"
+      className={`btn btn-secondary position-fixed bottom-0 end-0 m-4 scroll-to-top ${visible ? 'visible' : ''}`}
+      aria-label="Scroll back to top"
     >
       ↑ Top
     </button>
-  ) : null;
+  );
 };
 
 export default ScrollToTopButton;

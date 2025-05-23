@@ -14,18 +14,18 @@ import {
 } from "react-router-dom";
 
 const categoryMap = {
-  Politics: "politics",
-  Technology: "technology",
-  Business: "business",
-  Entertainment: "entertainment",
-  Sports: "sports",
-  Health: "health",
-  Science: "science",
-  Environment: "environment",
-  Education: "education",
-  Crime: "crime",
-  International: "world",
-  home: "top",
+  home: "top",          // 👈 ensure it matches your route
+  politics: "politics",
+  technology: "technology",
+  business: "business",
+  entertainment: "entertainment",
+  sports: "sports",
+  health: "health",
+  science: "science",
+  environment: "environment",
+  education: "education",
+  crime: "crime",
+  international: "world",
 };
 
 const RoutedContent = ({
@@ -51,7 +51,7 @@ const RoutedContent = ({
         toggleTheme={toggleTheme}
       />
       <Routes location={location} key={location.key}>
-        <Route path="*" element={<Navigate to="/home" />} />
+        <Route path="/" element={<Navigate to="/home" />} />
         <Route path="/about" element={<About theme={theme} />} />
         {Object.keys(categoryMap).map((path) => (
           <Route
@@ -59,6 +59,7 @@ const RoutedContent = ({
             path={`/${path}`}
             element={
               <News
+                key={path} 
                 {...commonProps}
                 pageSize={9}
                 country="in"

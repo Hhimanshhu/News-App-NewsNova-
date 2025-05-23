@@ -1,0 +1,11 @@
+/* Add this to your global CSS or create ScrollToTopButton.css */
+.scroll-to-top {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease-in-out;
+}
+
+.scroll-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+}

@@ -3,10 +3,11 @@ import NewsItem from "./NewsItem";
 import NewsSkeleton from "./NewsSkeleton";
 import ScrollToTopButton from "./ScrollToTopButton.js";
 import "./News.css";
+import { useMemo } from "react";
 import PropTypes from "prop-types";
 
 const categoryMap = {
-  latest: "top",
+  home: "top",          // 👈 ensure it matches your route
   politics: "politics",
   technology: "technology",
   business: "business",
@@ -17,8 +18,9 @@ const categoryMap = {
   environment: "environment",
   education: "education",
   crime: "crime",
-  international: "world"
+  international: "world",
 };
+
 
 const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRef, searchQuery }) => {
   const [articles, setArticles] = useState([]);
@@ -33,8 +35,8 @@ const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRe
     setLoading(true);
     loadingBarRef?.current?.continuousStart();
 
-    const apiKey = "pub_858716e13bf04ff077807ae24bb431879554e";
-    const safeCategory = categoryMap[category.toLowerCase()] || "top";
+    const apiKey = "pub_82467b684518b4921693a70737906473a9172";
+    const safeCategory = categoryMap[category?.toLowerCase()] ?? "top";
     const url = pageUrl
       ? `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}&page=${pageUrl}`
       : `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}`;
@@ -84,12 +86,13 @@ const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRe
   }, [category]);
 
   useEffect(() => {
-    setArticles([]);
-    setHasMore(true);
-    setNextPage(null);
-    seenUrlsRef.current.clear();
-    fetchNews();
-  }, [category, country, pagesize, fetchNews]);
+  setArticles([]);
+  setHasMore(true);
+  setNextPage(null);
+  seenUrlsRef.current.clear();
+  fetchNews();
+}, [category, country, pagesize, fetchNews]);
+
 
 
  useEffect(() => {
@@ -115,14 +118,15 @@ const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRe
     return () => observer.disconnect();
   }, [nextPage, loading, hasMore, fetchNews]);
 
-const filteredArticles = articles.filter((article) => {
-  if (!searchQuery.trim()) return true; // if searchQuery is empty, show all
+const filteredArticles = useMemo(() => {
+  if (!searchQuery.trim()) return articles;
   const lowerQuery = searchQuery.toLowerCase();
-  return (
-    article.title.toLowerCase().includes(lowerQuery) ||
-    article.description.toLowerCase().includes(lowerQuery)
+  return articles.filter(
+    (article) =>
+      article.title.toLowerCase().includes(lowerQuery) ||
+      article.description.toLowerCase().includes(lowerQuery)
   );
-});
+}, [articles, searchQuery]);
 
   return (
     <div className="container my-3">
@@ -152,6 +156,7 @@ const filteredArticles = articles.filter((article) => {
               imageurl={element.image_url}
               newsurl={element.link}
               date={element.pubDate}
+              source={element.source_id}
             />
           </div>
         ))}

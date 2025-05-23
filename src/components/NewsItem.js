@@ -2,7 +2,7 @@ import React from 'react';
 import './NewsItem.css';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
-const NewsItem = ({ title, description, imageurl, newsurl, date }) => {
+const NewsItem = ({ title, description, imageurl, newsurl, date, source }) => {
   const formattedDate = date
     ? new Date(date).toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
@@ -23,15 +23,20 @@ const NewsItem = ({ title, description, imageurl, newsurl, date }) => {
     <div className="card h-100 shadow-sm d-flex flex-column">
       {imageurl && (
         <img
-              src={imageurl || "/fallback.jpg"}
-              onError={(e) => e.target.src = "/fallback.jpg"}
-              className="card-img-top"
-              alt="news"
+          src={imageurl?.trim() || "/fallback.jpg"}
+          onError={(e) => {
+            e.target.onerror = null; // Prevent infinite fallback loop
+            e.target.src = "/fallback.jpg";
+          }}
+          
+          className="card-img-top"
+          alt={title || "News article"}
         />
       )}
       <div className="card-body d-flex flex-column">
-        <h5 className="card-title">{title}</h5>
-        <p className="card-text scrollable-text">{description}</p>
+      <h5 className="card-title" title={title}>{title?.slice(0, 100)}</h5>
+      <p className="card-text scrollable-text">{description?.slice(0, 150)}</p>
+
         <a
           href={newsurl}
           target="_blank"
@@ -43,6 +48,10 @@ const NewsItem = ({ title, description, imageurl, newsurl, date }) => {
         <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
           Published on {formattedDate} (IST)
         </p>
+
+        <p className="text-muted" style={{ fontSize: '0.75rem' }}>
+            Source: {source || "Unknown"}
+        </p>
         <div
           style={{
             fontSize: '0.75rem',
@@ -53,6 +62,7 @@ const NewsItem = ({ title, description, imageurl, newsurl, date }) => {
         >
           {relativeTime}
         </div>
+        
       </div>
     </div>
   );

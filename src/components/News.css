@@ -13,14 +13,19 @@
 }
 
 .card-img-top {
-  height: 180px;
   object-fit: cover;
+  height: auto;
+  max-height: 180px;
+  width: 100%;
 }
 
 .scrollable-text {
-  max-height: 80px;
-  overflow-y: auto; 
-  padding-right: 5px; /* Adds spacing for scrollbar */
+   max-height: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }
 
 .scrollable-text::-webkit-scrollbar {
