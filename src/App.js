@@ -42,6 +42,15 @@ const RoutedContent = ({
     loadingBarRef: loadingBarRef,
   };
 
+  useEffect(() => {
+  document.documentElement.setAttribute("data-bs-theme", theme);
+
+  const favicon = document.getElementById("favicon");
+  if (favicon) {
+    favicon.href = theme === 'dark' ? '/favicon-dark.png' : '/favicon-light.png';
+  }
+  }, [theme]);
+
   return (
     <>
       <Navbar

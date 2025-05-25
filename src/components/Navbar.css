@@ -31,4 +31,6 @@
   .bttn {
     padding-right: 20px;
   }
-    
+.navbar-brand img {
+  max-height: 70px;
+}

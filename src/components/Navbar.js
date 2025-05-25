@@ -49,12 +49,15 @@ const handleCategoryClick = (path) => {
       }`}
     >
       <div className="container-fluid">
-        <button
-          className="navbar-brand btn btn-link"
-          onClick={handleLogoClick}
-          aria-label="Go to Home"
-        >
-          NewsNova
+        <button className="navbar-brand btn btn-link d-flex align-items-center" aria-label="Go to Home" onClick={handleLogoClick}>
+           <img
+              src={theme === 'dark' ? '/logo-dark.png' : '/logo-light.png'}
+              alt="NewsNova Logo"
+              style={{ objectFit: 'contain' }}
+          />
+          <span style={{ fontWeight: "bold", fontSize: "1.25rem", color: theme === "dark" ? "white" : "black" }}>
+            NewsNova
+          </span>
         </button>
 
         <button
