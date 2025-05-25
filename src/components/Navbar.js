@@ -24,23 +24,12 @@ const handleCategoryClick = (path) => {
   setSearchQuery("");
 
   if (window.location.pathname === path) {
-    navigate("/refresh-temp"); // fake route
-    setTimeout(() => navigate(path), 0); // then back
+     navigate('/force-reload', { replace: true });
+     setTimeout(() => navigate(path), 0);
   } else {
     navigate(path);
   }
 };
-
-  // const handleCategoryClick = (path) => {
-  //   setSearchQuery("");
-
-  //   if (window.location.pathname === path) {
-  //     navigate("/refresh-temp"); // fake route
-  //     setTimeout(() => navigate(path), 0); // then back
-  //   } else {
-  //     navigate(path);
-  //   }
-  // };
 
   const handleLogoClick = () => {
     setSearchQuery("");

@@ -14,7 +14,7 @@ import {
 } from "react-router-dom";
 
 const categoryMap = {
-  home: "top",          // 👈 ensure it matches your route
+  home: "top",          
   politics: "politics",
   technology: "technology",
   business: "business",
@@ -52,14 +52,15 @@ const RoutedContent = ({
       />
       <Routes location={location} key={location.key}>
         <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/force-reload" element={null} />
         <Route path="/about" element={<About theme={theme} />} />
         {Object.keys(categoryMap).map((path) => (
           <Route
-            key={path}
+            key={categoryMap[path]}
             path={`/${path}`}
             element={
               <News
-                key={path} 
+                key={categoryMap[path]} 
                 {...commonProps}
                 pageSize={9}
                 country="in"
