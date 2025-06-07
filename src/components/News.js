@@ -5,24 +5,16 @@ import ScrollToTopButton from "./ScrollToTopButton.js";
 import "./News.css";
 import { useMemo } from "react";
 import PropTypes from "prop-types";
+import { useParams } from "react-router-dom";
 
-const categoryMap = {
-  home: "top",          // 👈 ensure it matches your route
-  politics: "politics",
-  technology: "technology",
-  business: "business",
-  entertainment: "entertainment",
-  sports: "sports",
-  health: "health",
-  science: "science",
-  environment: "environment",
-  education: "education",
-  crime: "crime",
-  international: "world",
-};
-
-
-const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRef, searchQuery }) => {
+const News = ({
+  pagesize = 12,
+  country = "in",
+  category = "latest",
+  loadingBarRef,
+  searchQuery,
+}) => {
+  const { category: categoryParam } = useParams();
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -30,75 +22,84 @@ const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRe
   const loaderRef = useRef(null);
   const seenUrlsRef = useRef(new Set());
 
+  const actualCategory =
+    categoryParam === "home"
+      ? "top"
+      : (categoryParam || "latest").toLowerCase();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchNews = useCallback(async (pageUrl = null) => {
-    setLoading(true);
-    loadingBarRef?.current?.continuousStart();
+  const fetchNews = useCallback(
+    async (pageUrl = null) => {
+      setLoading(true);
+      loadingBarRef?.current?.continuousStart();
 
-    const apiKey = "pub_82467b684518b4921693a70737906473a9172";
-    const safeCategory = categoryMap[category?.toLowerCase()] ?? "top";
-    const url = pageUrl
-      ? `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}&page=${pageUrl}`
-      : `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}`;
+      const apiKey = "pub_858716e13bf04ff077807ae24bb431879554e";
+      const safeCategory = actualCategory;
 
-    try {
-      console.log("Fetching news from:", url);
-      const response = await fetch(url);
-      const data = await response.json();
+      // const safeCategory = category === "home" ? "top" : category.toLowerCase();
+      const url = pageUrl
+        ? `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}&page=${pageUrl}`
+        : `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=${safeCategory}&country=${country.toLowerCase()}`;
 
-      console.log("API Response:", data);
+      try {
+        console.log("Fetching news from:", url);
+        const response = await fetch(url);
+        const data = await response.json();
 
-      if (response.status === 429) {
-        console.error("Rate limited: Too many requests (429)");
-        setHasMore(false);
-        return;
+        console.log("API Response:", data);
+
+        if (response.status === 429) {
+          console.error("Rate limited: Too many requests (429)");
+          setHasMore(false);
+          return;
+        }
+
+        if (!Array.isArray(data.results)) {
+          console.error("Malformed response: 'results' is not an array", data);
+          setHasMore(false);
+          return;
+        }
+
+        const newArticles = data.results.filter(
+          (article) =>
+            article.title &&
+            article.description &&
+            article.image_url &&
+            article.link &&
+            !seenUrlsRef.current.has(article.link)
+        );
+
+        setArticles((prev) => [...prev, ...newArticles]);
+        newArticles.forEach((article) => seenUrlsRef.current.add(article.link));
+        setNextPage(data.nextPage || null);
+        setHasMore(!!data.nextPage);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setLoading(false);
+        loadingBarRef?.current?.complete();
       }
-
-      if (!Array.isArray(data.results)) {
-        console.error("Malformed response: 'results' is not an array", data);
-        setHasMore(false);
-        return;
-      }
-
-      const newArticles = data.results.filter(
-        (article) =>
-          article.title &&
-          article.description &&
-          article.image_url &&
-          article.link &&
-          !seenUrlsRef.current.has(article.link)
-      );
-
-      setArticles((prev) => [...prev, ...newArticles]);
-      newArticles.forEach(article => seenUrlsRef.current.add(article.link));
-      setNextPage(data.nextPage || null);
-      setHasMore(!!data.nextPage);
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    } finally {
-      setLoading(false);
-      loadingBarRef?.current?.complete();
-    }
-  }, [category, country, loadingBarRef]);
+    },
+    [actualCategory, country, loadingBarRef]
+  );
 
   useEffect(() => {
-    document.title = `${category.charAt(0).toUpperCase() + category.slice(1)} - NewsNova`;
-  }, [category]);
+    document.title = `${
+      actualCategory.charAt(0).toUpperCase() + actualCategory.slice(1)
+    } - NewsNova`;
+  }, [actualCategory]);
 
   useEffect(() => {
-  setArticles([]);
-  setHasMore(true);
-  setNextPage(null);
-  seenUrlsRef.current.clear();
-  fetchNews();
-}, [category, country, pagesize, fetchNews]);
+    setArticles([]);
+    setHasMore(true);
+    setNextPage(null);
+    seenUrlsRef.current.clear();
+    fetchNews();
+  }, [actualCategory, country, pagesize, fetchNews]);
 
-
-
- useEffect(() => {
-  // On new search, scroll to top (optional for better UX)
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}, [searchQuery]);
+  useEffect(() => {
+    // On new search, scroll to top (optional for better UX)
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [searchQuery]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -118,27 +119,34 @@ const News = ({ pagesize = 12, country = "in", category = "latest", loadingBarRe
     return () => observer.disconnect();
   }, [nextPage, loading, hasMore, fetchNews]);
 
-const filteredArticles = useMemo(() => {
-  if (!searchQuery.trim()) return articles;
-  const lowerQuery = searchQuery.toLowerCase();
-  return articles.filter(
-    (article) =>
-      article.title.toLowerCase().includes(lowerQuery) ||
-      article.description.toLowerCase().includes(lowerQuery)
-  );
-}, [articles, searchQuery]);
+  const filteredArticles = useMemo(() => {
+    if (!searchQuery.trim()) return articles;
+    const lowerQuery = searchQuery.toLowerCase();
+    return articles.filter(
+      (article) =>
+        article.title.toLowerCase().includes(lowerQuery) ||
+        article.description.toLowerCase().includes(lowerQuery)
+    );
+  }, [articles, searchQuery]);
+
+  const displayCategory =
+    actualCategory === "top"
+      ? "Top"
+      : actualCategory.charAt(0).toUpperCase() + category.slice(1);
 
   return (
     <div className="container my-3">
       <div className="headingg">
         <h1 className="text-center" style={{ margin: "1px 50px" }}>
-          NewsNova - Top {category.charAt(0).toUpperCase() + category.slice(1)} Headlines
+          NewsNova - {displayCategory} Headlines
         </h1>
       </div>
       {filteredArticles.length === 0 && !loading && (
-        <div className="text-center text-muted my-3">No results found for "{searchQuery}"</div>
+        <div className="text-center text-muted my-3">
+          No results found for "{searchQuery}"
+        </div>
       )}
-        {searchQuery.trim() && (
+      {searchQuery.trim() && (
         <h5 className="text-muted text-center mb-3">
           Showing search results for: <strong>{searchQuery}</strong>
         </h5>
@@ -161,10 +169,12 @@ const filteredArticles = useMemo(() => {
           </div>
         ))}
       </div>
-      {loading && <NewsSkeleton count={9} />} 
+      {loading && <NewsSkeleton count={9} />}
       <div ref={loaderRef} style={{ height: "20px" }}></div>
       {!hasMore && (
-        <div className="text-center text-muted my-3">No more articles to load</div>
+        <div className="text-center text-muted my-3">
+          No more articles to load
+        </div>
       )}
       <ScrollToTopButton />
     </div>
@@ -179,5 +189,3 @@ News.propTypes = {
 };
 
 export default News;
-
-
